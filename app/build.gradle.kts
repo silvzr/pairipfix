@@ -13,12 +13,14 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Riduce le dimensioni mantenendo solo densità essenziali
+        resConfigs("en", "xxhdpi")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -29,14 +31,42 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    // Ottimizzazioni per le dimensioni
+    packagingOptions {
+        resources {
+            excludes += listOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/*.RSA",
+                "META-INF/*.SF",
+                "META-INF/*.DSA",
+                "DebugProbesKt.bin",
+                "kotlin-tooling-metadata.json"
+            )
+        }
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
+    bundle {
+        density {
+            enableSplit = false
+        }
+        abi {
+            enableSplit = false
+        }
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 dependencies {
-
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    // Rimosso material design e appcompat - non necessari per un modulo Xposed
     compileOnly("de.robv.android.xposed:api:82")
 }
